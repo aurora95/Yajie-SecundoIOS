@@ -7,13 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A54E9AC1BBE611600A3FFA0 /* XMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A54E9AB1BBE611600A3FFA0 /* XMessage.swift */; };
 		3A66D7AF1BB5464300A1A8E9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A66D7AE1BB5464300A1A8E9 /* AppDelegate.swift */; };
 		3A66D7B21BB5464300A1A8E9 /* SecundoIOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3A66D7B01BB5464300A1A8E9 /* SecundoIOS.xcdatamodeld */; };
-		3A66D7B41BB5464300A1A8E9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A66D7B31BB5464300A1A8E9 /* ViewController.swift */; };
+		3A66D7B41BB5464300A1A8E9 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A66D7B31BB5464300A1A8E9 /* MainViewController.swift */; };
 		3A66D7B71BB5464300A1A8E9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3A66D7B51BB5464300A1A8E9 /* Main.storyboard */; };
 		3A66D7B91BB5464300A1A8E9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A66D7B81BB5464300A1A8E9 /* Images.xcassets */; };
 		3A66D7BC1BB5464300A1A8E9 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3A66D7BA1BB5464300A1A8E9 /* LaunchScreen.xib */; };
 		3A66D7C81BB5464300A1A8E9 /* SecundoIOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A66D7C71BB5464300A1A8E9 /* SecundoIOSTests.swift */; };
+		3A66D7D21BB54A7800A1A8E9 /* TCPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A66D7D11BB54A7800A1A8E9 /* TCPClient.swift */; };
+		3AFD1C3C1BC76DDE009AF010 /* XMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFD1C3B1BC76DDE009AF010 /* XMessageHandler.swift */; settings = {ASSET_TAGS = (); }; };
+		3AFD1C3E1BC7708A009AF010 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFD1C3D1BC7708A009AF010 /* SwiftyJSON.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -27,17 +31,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3A54E9AB1BBE611600A3FFA0 /* XMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMessage.swift; sourceTree = "<group>"; };
 		3A66D7A91BB5464300A1A8E9 /* SecundoIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SecundoIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A66D7AD1BB5464300A1A8E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3A66D7AE1BB5464300A1A8E9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3A66D7B11BB5464300A1A8E9 /* SecundoIOS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SecundoIOS.xcdatamodel; sourceTree = "<group>"; };
-		3A66D7B31BB5464300A1A8E9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		3A66D7B31BB5464300A1A8E9 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		3A66D7B61BB5464300A1A8E9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3A66D7B81BB5464300A1A8E9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		3A66D7BB1BB5464300A1A8E9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		3A66D7C11BB5464300A1A8E9 /* SecundoIOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SecundoIOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A66D7C61BB5464300A1A8E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3A66D7C71BB5464300A1A8E9 /* SecundoIOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecundoIOSTests.swift; sourceTree = "<group>"; };
+		3A66D7D11BB54A7800A1A8E9 /* TCPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TCPClient.swift; sourceTree = "<group>"; };
+		3A66D7D31BB7E9F500A1A8E9 /* SecundoIOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SecundoIOS-Bridging-Header.h"; sourceTree = "<group>"; };
+		3AFD1C3B1BC76DDE009AF010 /* XMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMessageHandler.swift; sourceTree = "<group>"; };
+		3AFD1C3D1BC7708A009AF010 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,12 +89,15 @@
 			isa = PBXGroup;
 			children = (
 				3A66D7AE1BB5464300A1A8E9 /* AppDelegate.swift */,
-				3A66D7B31BB5464300A1A8E9 /* ViewController.swift */,
+				3A66D7B31BB5464300A1A8E9 /* MainViewController.swift */,
+				3A66D7D11BB54A7800A1A8E9 /* TCPClient.swift */,
+				3AFD1C3B1BC76DDE009AF010 /* XMessageHandler.swift */,
+				3A54E9AB1BBE611600A3FFA0 /* XMessage.swift */,
+				3AFD1C3D1BC7708A009AF010 /* SwiftyJSON.swift */,
 				3A66D7B51BB5464300A1A8E9 /* Main.storyboard */,
-				3A66D7B81BB5464300A1A8E9 /* Images.xcassets */,
-				3A66D7BA1BB5464300A1A8E9 /* LaunchScreen.xib */,
 				3A66D7B01BB5464300A1A8E9 /* SecundoIOS.xcdatamodeld */,
 				3A66D7AC1BB5464300A1A8E9 /* Supporting Files */,
+				3A66D7D31BB7E9F500A1A8E9 /* SecundoIOS-Bridging-Header.h */,
 			);
 			path = SecundoIOS;
 			sourceTree = "<group>";
@@ -93,6 +105,8 @@
 		3A66D7AC1BB5464300A1A8E9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3A66D7BA1BB5464300A1A8E9 /* LaunchScreen.xib */,
+				3A66D7B81BB5464300A1A8E9 /* Images.xcassets */,
 				3A66D7AD1BB5464300A1A8E9 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -159,11 +173,14 @@
 		3A66D7A11BB5464300A1A8E9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Yajie Xing";
 				TargetAttributes = {
 					3A66D7A81BB5464300A1A8E9 = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = 36UC6K7X2M;
 					};
 					3A66D7C01BB5464300A1A8E9 = {
 						CreatedOnToolsVersion = 6.4;
@@ -215,8 +232,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3A66D7B41BB5464300A1A8E9 /* ViewController.swift in Sources */,
+				3A66D7D21BB54A7800A1A8E9 /* TCPClient.swift in Sources */,
+				3A66D7B41BB5464300A1A8E9 /* MainViewController.swift in Sources */,
 				3A66D7AF1BB5464300A1A8E9 /* AppDelegate.swift in Sources */,
+				3AFD1C3C1BC76DDE009AF010 /* XMessageHandler.swift in Sources */,
+				3A54E9AC1BBE611600A3FFA0 /* XMessage.swift in Sources */,
+				3AFD1C3E1BC7708A009AF010 /* SwiftyJSON.swift in Sources */,
 				3A66D7B21BB5464300A1A8E9 /* SecundoIOS.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -280,6 +301,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -346,9 +368,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = SecundoIOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yajiexing.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SecundoIOS/SecundoIOS-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -356,9 +383,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = SecundoIOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yajiexing.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "SecundoIOS/SecundoIOS-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -376,6 +407,7 @@
 				);
 				INFOPLIST_FILE = SecundoIOSTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yajiexing.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SecundoIOS.app/SecundoIOS";
 			};
@@ -391,6 +423,7 @@
 				);
 				INFOPLIST_FILE = SecundoIOSTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yajiexing.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SecundoIOS.app/SecundoIOS";
 			};
@@ -415,6 +448,7 @@
 				3A66D7CD1BB5464300A1A8E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3A66D7CE1BB5464300A1A8E9 /* Build configuration list for PBXNativeTarget "SecundoIOSTests" */ = {
 			isa = XCConfigurationList;
@@ -423,6 +457,7 @@
 				3A66D7D01BB5464300A1A8E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
