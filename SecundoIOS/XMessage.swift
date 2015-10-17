@@ -42,6 +42,9 @@ class XMessage{
     var userID = Int()
     var data = Data()
 
+    init(){
+        
+    }
     
     init?(_ jsonString: String){
         if let dataFromString = jsonString.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {

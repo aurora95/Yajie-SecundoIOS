@@ -10,8 +10,10 @@ import Foundation
 
 class XMessageHandler
 {
+    weak var tcpClient: TCPClient?
     var messageQ = [XMessage]()
-    init(){
+    init(owner: TCPClient){
+        tcpClient = owner
         let qos = Int(QOS_CLASS_UTILITY.rawValue)
         let queue = dispatch_get_global_queue(qos, 0)
         dispatch_async(queue){

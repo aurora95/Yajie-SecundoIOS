@@ -22,7 +22,7 @@ class TCPClient{
                 let delay = Int64(delayInSeconds*Double(NSEC_PER_MSEC))
                 let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, delay)
                 dispatch_after(dispatchTime, dispatch_get_main_queue()) {
-                    NSNotificationCenter.defaultCenter().postNotificationName(Notification.StreamError, object: self.streamError)
+                    NSNotificationCenter.defaultCenter().postNotificationName(Notification.StreamError, object: nil)
                 }
             }
         }
@@ -35,9 +35,11 @@ class TCPClient{
     var writeStream: CFWriteStream?
     var readStreamContext : CFStreamClientContext?
     var writeStreamContext : CFStreamClientContext?
-    var messageHandler = XMessageHandler()
+    var messageHandler: XMessageHandler!
+    var clientID: Int?
     
     init(){
+        messageHandler = XMessageHandler(owner: self)
         var inputStream: Unmanaged<CFReadStream>?
         var outputStream: Unmanaged<CFWriteStream>?
         CFStreamCreatePairWithSocketToHost(
@@ -66,8 +68,24 @@ class TCPClient{
             streamError = true
             print("Cannot open stream\n")
         }
+        if CFWriteStreamOpen(writeStream) == false{
+            streamError = true
+            print("Cannot open stream\n")
+        }
     }
  
+    func SendString(stringToSend: String){
+        dispatch_async(clientQ){
+            let buf = NSMutableData(capacity: self.bufferSize)
+            let buffer = UnsafeMutablePointer<UInt8>(buf!.bytes)
+            stringToSend.dataUsingEncoding(NSUTF8StringEncoding)!.getBytes(UnsafeMutablePointer<Void>(buffer), length: stringToSend.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
+            CFWriteStreamWrite(
+                self.writeStream,
+                buffer,
+                stringToSend.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
+            )
+        }
+    }
 }
 
 func ClientCallBackRead(stream: CFReadStream!, _ eventType: CFStreamEventType, _ clientCallBackInfo : UnsafeMutablePointer<Void>){
@@ -81,11 +99,10 @@ func ClientCallBackRead(stream: CFReadStream!, _ eventType: CFStreamEventType, _
         
         dispatch_async(client.clientQ){
             let buf = NSMutableData(capacity: client.bufferSize)
-            var buffer = UnsafeMutablePointer<UInt8>(buf!.bytes)
+            let buffer = UnsafeMutablePointer<UInt8>(buf!.bytes)
             let length = CFReadStreamRead(stream, buffer, client.bufferSize)
             if length > 0{
-                let msgString = String(buffer)
-                let message = XMessage(msgString)!
+                let message = XMessage(String(buffer))!
                 client.messageHandler.PushMessage(message)
             }
             
