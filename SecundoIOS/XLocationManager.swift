@@ -18,11 +18,21 @@ class XLocationManager:NSObject, CLLocationManagerDelegate
         didSet{
             if currentLocation != nil{
                 let msg = XMessage()
-                msg.msgType = XMSG_MOVE
-                msg.userID = tcpClient.clientID!
-                msg.data.loc.latitude = currentLocation!.coordinate.latitude
-                msg.data.loc.longitude = currentLocation!.coordinate.longitude
-                tcpClient.SendString(msg.toJSON())
+                if tcpClient.isClientInitialized == false{
+                    msg.msgType = XMSG_INIT
+                    msg.userID = tcpClient.clientID
+                    msg.data.loc.latitude = currentLocation!.coordinate.latitude
+                    msg.data.loc.longitude = currentLocation!.coordinate.longitude
+                    msg.data.skin = settingsUserSkin
+                    tcpClient.SendString(msg.toJSON())
+                    tcpClient.isClientInitialized = true
+                } else{
+                    msg.msgType = XMSG_MOVE
+                    msg.userID = tcpClient.clientID
+                    msg.data.loc.latitude = currentLocation!.coordinate.latitude
+                    msg.data.loc.longitude = currentLocation!.coordinate.longitude
+                    tcpClient.SendString(msg.toJSON())
+                }
             }
         }
     }
@@ -48,12 +58,17 @@ class XLocationManager:NSObject, CLLocationManagerDelegate
         if !CLLocationManager.locationServicesEnabled(){
             NSNotificationCenter.defaultCenter().postNotificationName(Notification.LocationError, object: nil)
         }
-        locationManager!.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager!.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         locationManager!.startUpdatingLocation()
     }
     
     @objc func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        currentLocation = locations.last!
+        if currentLocation?.coordinate.latitude == locations.last?.coordinate.latitude
+            && currentLocation?.coordinate.longitude == locations.last?.coordinate.longitude{
+            //do nothing
+        } else{
+            currentLocation = locations.last!
+        }
     }
     
     @objc func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
