@@ -19,6 +19,7 @@
 		3AE0EC341BD253710013292E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AE0EC331BD253710013292E /* CoreLocation.framework */; };
 		3AE0EC381BD284A00013292E /* XLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE0EC371BD284A00013292E /* XLocationManager.swift */; settings = {ASSET_TAGS = (); }; };
 		3AE0EC3A1BD2AC790013292E /* SecundoSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE0EC391BD2AC780013292E /* SecundoSettings.swift */; settings = {ASSET_TAGS = (); }; };
+		3AE0EC3F1BDB828C0013292E /* SocketHelper.c in Sources */ = {isa = PBXBuildFile; fileRef = 3AE0EC3E1BDB828C0013292E /* SocketHelper.c */; settings = {ASSET_TAGS = (); }; };
 		3AFD1C3C1BC76DDE009AF010 /* XMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFD1C3B1BC76DDE009AF010 /* XMessageHandler.swift */; settings = {ASSET_TAGS = (); }; };
 		3AFD1C3E1BC7708A009AF010 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFD1C3D1BC7708A009AF010 /* SwiftyJSON.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
@@ -51,6 +52,8 @@
 		3AE0EC331BD253710013292E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		3AE0EC371BD284A00013292E /* XLocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XLocationManager.swift; sourceTree = "<group>"; };
 		3AE0EC391BD2AC780013292E /* SecundoSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecundoSettings.swift; sourceTree = "<group>"; };
+		3AE0EC3B1BDA710B0013292E /* SocketHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketHelper.h; sourceTree = "<group>"; };
+		3AE0EC3E1BDB828C0013292E /* SocketHelper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SocketHelper.c; sourceTree = "<group>"; };
 		3AFD1C3B1BC76DDE009AF010 /* XMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMessageHandler.swift; sourceTree = "<group>"; };
 		3AFD1C3D1BC7708A009AF010 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -108,6 +111,8 @@
 				3A66D7B01BB5464300A1A8E9 /* SecundoIOS.xcdatamodeld */,
 				3A66D7AC1BB5464300A1A8E9 /* Supporting Files */,
 				3A66D7D31BB7E9F500A1A8E9 /* SecundoIOS-Bridging-Header.h */,
+				3AE0EC3B1BDA710B0013292E /* SocketHelper.h */,
+				3AE0EC3E1BDB828C0013292E /* SocketHelper.c */,
 			);
 			path = SecundoIOS;
 			sourceTree = "<group>";
@@ -244,6 +249,7 @@
 			files = (
 				3A66D7D21BB54A7800A1A8E9 /* TCPClient.swift in Sources */,
 				3A66D7B41BB5464300A1A8E9 /* MainViewController.swift in Sources */,
+				3AE0EC3F1BDB828C0013292E /* SocketHelper.c in Sources */,
 				3AE0EC3A1BD2AC790013292E /* SecundoSettings.swift in Sources */,
 				3AE0EC381BD284A00013292E /* XLocationManager.swift in Sources */,
 				3A66D7AF1BB5464300A1A8E9 /* AppDelegate.swift in Sources */,
