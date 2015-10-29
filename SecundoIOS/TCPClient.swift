@@ -42,6 +42,8 @@ class TCPClient{
     
     init(){
         messageHandler = XMessageHandler(owner: self)
+        
+        //create Socketstream
         var inputStream: Unmanaged<CFReadStream>?
         var outputStream: Unmanaged<CFWriteStream>?
         CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault, serverIP, UInt32(port), &inputStream, &outputStream
@@ -56,21 +58,13 @@ class TCPClient{
             ClientCallBackRead,
             &readStreamContext!
         )
-        CFReadStreamScheduleWithRunLoop(
-            readStream,
-            CFRunLoopGetCurrent(),
-            kCFRunLoopDefaultMode
-        )
-        if CFReadStreamOpen(readStream) == false{
-            streamError = true
-            print("Cannot open stream\n")
-        }
-        if CFWriteStreamOpen(writeStream) == false{
-            streamError = true
-            print("Cannot open stream\n")
-        }
         
-        locationManager = XLocationManager(client: self)
+        let qos = Int(QOS_CLASS_UTILITY.rawValue)
+        let queue = dispatch_get_global_queue(qos, 0)
+        dispatch_async(queue){
+            CFReadStreamScheduleWithRunLoop(self.readStream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode)
+            CFRunLoopRun()
+        }
         
     }
  
@@ -86,6 +80,19 @@ class TCPClient{
             )
             print("Send: ", stringToSend)
         }
+    }
+    
+    func ConnectAndInitialize(){
+        if CFReadStreamOpen(readStream) == false{
+            streamError = true
+            print("Cannot open stream\n")
+        }
+        if CFWriteStreamOpen(writeStream) == false{
+            streamError = true
+            print("Cannot open stream\n")
+        }
+        
+        locationManager = XLocationManager(client: self)
     }
 }
 
