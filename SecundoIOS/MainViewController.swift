@@ -29,6 +29,8 @@ class MainViewController: UIViewController
             name: XLocationManager.Notification.LocationError,
             object: nil
         )
+        
+        tcpClient.ConnectAndInitialize()
     }
 
     override func didReceiveMemoryWarning() {
