@@ -54,7 +54,7 @@ class TCPClient{
         readStreamContext = CFStreamClientContext(version: 0, info:  &client, retain: nil, release: nil, copyDescription: nil)
         CFReadStreamSetClient(
             readStream,
-            CFStreamEventType.HasBytesAvailable.rawValue & CFStreamEventType.ErrorOccurred.rawValue,
+            CFStreamEventType.HasBytesAvailable.rawValue | CFStreamEventType.ErrorOccurred.rawValue,
             ClientCallBackRead,
             &readStreamContext!
         )
