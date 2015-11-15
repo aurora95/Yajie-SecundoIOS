@@ -8,16 +8,31 @@
 
 import Foundation
 
-class TCPClient{
-    let serverIP = "115.159.38.35"
-    let port = 6666
-    let timeout = 5.0
+enum ClientStatus{
+    case none
+    case connected
+    case initializing
+    case initialized
+    case streamError
+}
+
+class TCPClientContext{
+    
     let bufferSize = 1024
     let clientQ = dispatch_queue_create("com.secundo.tcpclient", DISPATCH_QUEUE_SERIAL)
     
-    var streamError = Bool(false){
+    struct Notification{
+        static let StreamError = "TCPClientContext.Notification.StreamError"
+    }
+    
+    var readStream : CFReadStream?
+    var writeStream: CFWriteStream?
+    var readStreamContext : CFStreamClientContext?
+    var writeStreamContext : CFStreamClientContext?
+    var clientID = 0
+    var clientStatus = ClientStatus.none{
         didSet{
-            if streamError == true{
+            if clientStatus == ClientStatus.streamError{
                 let delayInSeconds = 5.0
                 let delay = Int64(delayInSeconds*Double(NSEC_PER_MSEC))
                 let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, delay)
@@ -27,85 +42,93 @@ class TCPClient{
             }
         }
     }
-    struct Notification{
-        static let StreamError = "TCPClient.Notification.StreamError"
-    }
-    
-    var clientID = 0
-    var isClientInitialized = false
     var messageHandler: XMessageHandler!
     var locationManager: XLocationManager!
-    var socketContext = CFSocketContext()
-    var socket: CFSocket!
+}
+
+class TCPClient{
+    let serverIP = "115.159.38.35"
+    let port = 6666
+    let timeout = 5.0
     
+    var clientContext = TCPClientContext()
     
     init(){
-        messageHandler = XMessageHandler(owner: self)
-        //create socket
-        socket = CFSocketCreate(kCFAllocatorDefault, PF_INET, SOCK_STREAM, IPPROTO_TCP, CFSocketCallBackType.ReadCallBack.rawValue | CFSocketCallBackType.ConnectCallBack.rawValue, ClientSocketReadCallBack, &socketContext)
-        //set socket flags
-        //var sockopt = CFSocketGetSocketFlags(socket)
-        //sockopt |= kCFSocketAutomaticallyReenableReadCallBack
-        //CFSocketSetSocketFlags(socket, sockopt)
-        //
-        let qos = Int(QOS_CLASS_UTILITY.rawValue)
-        let queue = dispatch_get_global_queue(qos, 0)
-        dispatch_async(queue){
-            self.MainWork()
-        }
-        //set address
-        var serveraddr = GetSockAddr(NSString(string: serverIP).cStringUsingEncoding(NSUTF8StringEncoding), Int32(port))
-        let serveraddrData = CFDataCreate(kCFAllocatorDefault, TransSockAddrToBytes(&serveraddr), Int(SizeOfSockAddr()))
-        //CFSocketSetAddress(socket, serveraddrData)
-        CFSocketConnectToAddress(socket, serveraddrData, 5.0)
+        clientContext.messageHandler = XMessageHandler(owner: self)
         
-        
+        //create Socketstream
+        var inputStream: Unmanaged<CFReadStream>?
+        var outputStream: Unmanaged<CFWriteStream>?
+        CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault, serverIP, UInt32(port), &inputStream, &outputStream
+        )
+        clientContext.readStream = inputStream!.takeUnretainedValue()
+        clientContext.writeStream = outputStream!.takeUnretainedValue()
+        clientContext.readStreamContext = CFStreamClientContext(version: 0, info: &clientContext, retain: nil, release: nil, copyDescription: nil)
+        CFReadStreamSetClient(
+            clientContext.readStream,
+            CFStreamEventType.HasBytesAvailable.rawValue | CFStreamEventType.ErrorOccurred.rawValue,
+            ClientCallBackRead,
+            &clientContext.readStreamContext!
+        )
         
         let qos = Int(QOS_CLASS_UTILITY.rawValue)
         let queue = dispatch_get_global_queue(qos, 0)
         dispatch_async(queue){
-            CFReadStreamScheduleWithRunLoop(self.readStream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode)
+            CFReadStreamScheduleWithRunLoop(self.clientContext.readStream, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode)
             CFRunLoopRun()
         }
         
     }
  
-    func MainWork(){
-        CFRunLoopAddSource(CFRunLoopGetCurrent(), CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket, 1), kCFRunLoopDefaultMode)
-        CFRunLoopRun()
-    }
-    
     func SendString(stringToSend: String){
-        dispatch_async(clientQ){
-            let buf = NSMutableData(capacity: self.bufferSize)
+        dispatch_async(clientContext.clientQ){
+            let buf = NSMutableData(capacity: self.clientContext.bufferSize)
             let buffer = UnsafeMutablePointer<UInt8>(buf!.bytes)
             stringToSend.dataUsingEncoding(NSUTF8StringEncoding)!.getBytes(UnsafeMutablePointer<Void>(buffer), length: stringToSend.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
-            
-            
+            CFWriteStreamWrite(
+                self.clientContext.writeStream,
+                buffer,
+                stringToSend.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
+            )
             print("Send: ", stringToSend)
         }
     }
     
     func ConnectAndInitialize(){
-        if CFReadStreamOpen(readStream) == false{
-            streamError = true
+        if CFReadStreamOpen(clientContext.readStream) == false{
+            clientContext.clientStatus = ClientStatus.streamError
             print("Cannot open stream\n")
         }
-        if CFWriteStreamOpen(writeStream) == false{
-            streamError = true
+        if CFWriteStreamOpen(clientContext.writeStream) == false{
+            clientContext.clientStatus = ClientStatus.streamError
             print("Cannot open stream\n")
         }
-        
-        locationManager = XLocationManager(client: self)
+        if clientContext.clientStatus != ClientStatus.streamError{
+            clientContext.clientStatus = ClientStatus.connected
+        }
+        clientContext.locationManager = XLocationManager(client: self)
     }
 }
 
-func ClientSocketReadCallBack(sock:CFSocket!, _ callbacktype:CFSocketCallBackType, _ address:CFData!, _ data:UnsafePointer<Void>, _ info:UnsafeMutablePointer<Void>) -> Void{
-    if callbacktype == CFSocketCallBackType.AcceptCallBack{
-        print("connection failed\n")
+func ClientCallBackRead(stream: CFReadStream!, _ eventType: CFStreamEventType, _ clientCallBackInfo : UnsafeMutablePointer<Void>){
+    let clientContextPointer = UnsafeMutablePointer<TCPClientContext>(clientCallBackInfo)
+    let clientContext = clientContextPointer.memory
+    if eventType == CFStreamEventType.ErrorOccurred{
+        clientContext.clientStatus = ClientStatus.streamError
     }
-    else if callbacktype == CFSocketCallBackType.ReadCallBack{
+    if eventType == CFStreamEventType.HasBytesAvailable{
         
+        dispatch_async(clientContext.clientQ){
+            let buffer = UnsafeMutablePointer<UInt8>.alloc(clientContext.bufferSize)
+            let length = CFReadStreamRead(stream, buffer, clientContext.bufferSize)
+            print(length)
+            if length > 0{
+                let str =  String.fromCString(UnsafePointer<CChar>(buffer))
+                let message = XMessage(str!)!
+                clientContext.messageHandler.PushMessage(message)
+                print("Message received:", message.toJSON())
+            }
+        }
     }
 }
 

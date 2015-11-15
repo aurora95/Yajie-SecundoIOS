@@ -32,6 +32,7 @@ public let ErrorUnsupportedType: Int! = 999
 public let ErrorIndexOutOfBounds: Int! = 900
 public let ErrorWrongType: Int! = 901
 public let ErrorNotExist: Int! = 500
+public let ErrorInvalidJSON: Int! = 490
 
 // MARK: - JSON Type
 
@@ -56,14 +57,14 @@ public enum Type :Int{
 public struct JSON {
     
     /**
-    Creates a JSON using the data.
-    
-    - parameter data:  The NSData used to convert to json.Top level object in data is an NSArray or NSDictionary
-    - parameter opt:   The JSON serialization reading options. `.AllowFragments` by default.
-    - parameter error: error The NSErrorPointer used to return the error. `nil` by default.
-    
-    - returns: The created JSON
-    */
+     Creates a JSON using the data.
+     
+     - parameter data:  The NSData used to convert to json.Top level object in data is an NSArray or NSDictionary
+     - parameter opt:   The JSON serialization reading options. `.AllowFragments` by default.
+     - parameter error: error The NSErrorPointer used to return the error. `nil` by default.
+     
+     - returns: The created JSON
+     */
     public init(data:NSData, options opt: NSJSONReadingOptions = .AllowFragments, error: NSErrorPointer = nil) {
         do {
             let object: AnyObject = try NSJSONSerialization.JSONObjectWithData(data, options: opt)
@@ -77,34 +78,34 @@ public struct JSON {
     }
     
     /**
-    Creates a JSON using the object.
-    
-    - parameter object:  The object must have the following properties: All objects are NSString/String, NSNumber/Int/Float/Double/Bool, NSArray/Array, NSDictionary/Dictionary, or NSNull; All dictionary keys are NSStrings/String; NSNumbers are not NaN or infinity.
-    
-    - returns: The created JSON
-    */
+     Creates a JSON using the object.
+     
+     - parameter object:  The object must have the following properties: All objects are NSString/String, NSNumber/Int/Float/Double/Bool, NSArray/Array, NSDictionary/Dictionary, or NSNull; All dictionary keys are NSStrings/String; NSNumbers are not NaN or infinity.
+     
+     - returns: The created JSON
+     */
     public init(_ object: AnyObject) {
         self.object = object
     }
     
     /**
-    Creates a JSON from a [JSON]
-    
-    - parameter jsonArray: A Swift array of JSON objects
-    
-    - returns: The created JSON
-    */
+     Creates a JSON from a [JSON]
+     
+     - parameter jsonArray: A Swift array of JSON objects
+     
+     - returns: The created JSON
+     */
     public init(_ jsonArray:[JSON]) {
         self.init(jsonArray.map { $0.object })
     }
     
     /**
-    Creates a JSON from a [String: JSON]
-    
-    :param: jsonDictionary A Swift dictionary of JSON objects
-    
-    :returns: The created JSON
-    */
+     Creates a JSON from a [String: JSON]
+     
+     - parameter jsonDictionary: A Swift dictionary of JSON objects
+     
+     - returns: The created JSON
+     */
     public init(_ jsonDictionary:[String: JSON]) {
         var dictionary = [String: AnyObject]()
         for (key, json) in jsonDictionary {
@@ -223,7 +224,7 @@ extension JSON : Swift.CollectionType, Swift.SequenceType, Swift.Indexable {
         }
     }
     
-    /// If `type` is `.Array` or `.Dictionary`, return `array.empty` or `dictonary.empty` otherwise return `false`.
+    /// If `type` is `.Array` or `.Dictionary`, return `array.empty` or `dictonary.empty` otherwise return `true`.
     public var isEmpty: Bool {
         get {
             switch self.type {
@@ -261,10 +262,10 @@ extension JSON : Swift.CollectionType, Swift.SequenceType, Swift.Indexable {
     }
     
     /**
-    If `type` is `.Array` or `.Dictionary`, return a generator over the elements like `Array` or `Dictionary`, otherwise return a generator over empty.
-    
-    - returns: Return a *generator* over the elements of JSON.
-    */
+     If `type` is `.Array` or `.Dictionary`, return a generator over the elements like `Array` or `Dictionary`, otherwise return a generator over empty.
+     
+     - returns: Return a *generator* over the elements of JSON.
+     */
     public func generate() -> JSON.Generator {
         return JSON.Generator(self)
     }
@@ -405,11 +406,26 @@ public struct JSONGenerator : GeneratorType {
 /**
 *  To mark both String and Int can be used in subscript.
 */
-public protocol JSONSubscriptType {}
+public enum JSONKey {
+    case Index(Int)
+    case Key(String)
+}
 
-extension Int: JSONSubscriptType {}
+public protocol JSONSubscriptType {
+    var jsonKey:JSONKey { get }
+}
 
-extension String: JSONSubscriptType {}
+extension Int: JSONSubscriptType {
+    public var jsonKey:JSONKey {
+        return JSONKey.Index(self)
+    }
+}
+
+extension String: JSONSubscriptType {
+    public var jsonKey:JSONKey {
+        return JSONKey.Key(self)
+    }
+}
 
 extension JSON {
     
@@ -462,34 +478,32 @@ extension JSON {
     /// If `sub` is `Int`, return `subscript(index:)`; If `sub` is `String`,  return `subscript(key:)`.
     private subscript(sub sub: JSONSubscriptType) -> JSON {
         get {
-            if sub is String {
-                return self[key:sub as! String]
-            } else {
-                return self[index:sub as! Int]
+            switch sub.jsonKey {
+            case .Index(let index): return self[index: index]
+            case .Key(let key): return self[key: key]
             }
         }
         set {
-            if sub is String {
-                self[key:sub as! String] = newValue
-            } else {
-                self[index:sub as! Int] = newValue
+            switch sub.jsonKey {
+            case .Index(let index): self[index: index] = newValue
+            case .Key(let key): self[key: key] = newValue
             }
         }
     }
     
     /**
-    Find a json in the complex data structuresby using the Int/String's array.
-    
-    - parameter path: The target json's path. Example:
-    
-    let json = JSON[data]
-    let path = [9,"list","person","name"]
-    let name = json[path]
-    
-    The same as: let name = json[9]["list"]["person"]["name"]
-    
-    - returns: Return a json found by the path or a null json with error
-    */
+     Find a json in the complex data structuresby using the Int/String's array.
+     
+     - parameter path: The target json's path. Example:
+     
+     let json = JSON[data]
+     let path = [9,"list","person","name"]
+     let name = json[path]
+     
+     The same as: let name = json[9]["list"]["person"]["name"]
+     
+     - returns: Return a json found by the path or a null json with error
+     */
     public subscript(path: [JSONSubscriptType]) -> JSON {
         get {
             return path.reduce(self) { $0[sub: $1] }
@@ -510,16 +524,16 @@ extension JSON {
     }
     
     /**
-    Find a json in the complex data structuresby using the Int/String's array.
-    
-    - parameter path: The target json's path. Example:
-    
-    let name = json[9,"list","person","name"]
-    
-    The same as: let name = json[9]["list"]["person"]["name"]
-    
-    - returns: Return a json found by the path or a null json with error
-    */
+     Find a json in the complex data structuresby using the Int/String's array.
+     
+     - parameter path: The target json's path. Example:
+     
+     let name = json[9,"list","person","name"]
+     
+     The same as: let name = json[9]["list"]["person"]["name"]
+     
+     - returns: Return a json found by the path or a null json with error
+     */
     public subscript(path: JSONSubscriptType...) -> JSON {
         get {
             return self[path]
@@ -610,6 +624,10 @@ extension JSON: Swift.RawRepresentable {
     }
     
     public func rawData(options opt: NSJSONWritingOptions = NSJSONWritingOptions(rawValue: 0)) throws -> NSData {
+        guard NSJSONSerialization.isValidJSONObject(self.object) else {
+            throw NSError(domain: ErrorDomain, code: ErrorInvalidJSON, userInfo: [NSLocalizedDescriptionKey: "JSON is invalid"])
+        }
+        
         return try NSJSONSerialization.dataWithJSONObject(self.object, options: opt)
     }
     
@@ -842,13 +860,11 @@ extension JSON {
         get {
             switch self.type {
             case .String:
-                let scanner = NSScanner(string: self.object as! String)
-                if scanner.scanDouble(nil){
-                    if (scanner.atEnd) {
-                        return NSNumber(double:(self.object as! NSString).doubleValue)
-                    }
+                let decimal = NSDecimalNumber(string: self.object as? String)
+                if decimal == NSDecimalNumber.notANumber() {  // indicates parse error
+                    return NSDecimalNumber.zero()
                 }
-                return NSNumber(double: 0.0)
+                return decimal
             case .Number, .Bool:
                 return self.object as! NSNumber
             default:
@@ -876,6 +892,12 @@ extension JSON {
         set {
             self.object = NSNull()
         }
+    }
+    public func isExists() -> Bool{
+        if let errorValue = error where errorValue.code == ErrorNotExist{
+            return false
+        }
+        return true
     }
 }
 
@@ -1265,7 +1287,7 @@ private let falseObjCType = String.fromCString(falseNumber.objCType)
 
 // MARK: - NSNumber: Comparable
 
-extension NSNumber: Swift.Comparable {
+extension NSNumber {
     var isBool:Bool {
         get {
             let objCType = String.fromCString(self.objCType)

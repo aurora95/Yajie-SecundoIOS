@@ -20,7 +20,7 @@ class MainViewController: UIViewController
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: "StreamErrorAlert:",
-            name: TCPClient.Notification.StreamError,
+            name: TCPClientContext.Notification.StreamError,
             object: nil
         )
         NSNotificationCenter.defaultCenter().addObserver(

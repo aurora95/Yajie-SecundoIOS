@@ -36,5 +36,9 @@ class XMessageHandler
     
     func HandleMessage(message:XMessage){
         print(message.toJSON())
+        //
+        
     }
 }
+
+

@@ -18,17 +18,17 @@ class XLocationManager:NSObject, CLLocationManagerDelegate
         didSet{
             if currentLocation != nil{
                 let msg = XMessage()
-                if tcpClient.isClientInitialized == false{
+                if tcpClient.clientContext.clientStatus == ClientStatus.connected{
                     msg.msgType = XMSG_INIT
-                    msg.userID = tcpClient.clientID
+                    msg.userID = tcpClient.clientContext.clientID
                     msg.data.loc.latitude = currentLocation!.coordinate.latitude
                     msg.data.loc.longitude = currentLocation!.coordinate.longitude
                     msg.data.skin = settingsUserSkin
                     tcpClient.SendString(msg.toJSON())
-                    tcpClient.isClientInitialized = true
-                } else{
+                    tcpClient.clientContext.clientStatus = ClientStatus.initializing
+                } else if tcpClient.clientContext.clientStatus == ClientStatus.initialized{
                     msg.msgType = XMSG_MOVE
-                    msg.userID = tcpClient.clientID
+                    msg.userID = tcpClient.clientContext.clientID
                     msg.data.loc.latitude = currentLocation!.coordinate.latitude
                     msg.data.loc.longitude = currentLocation!.coordinate.longitude
                     tcpClient.SendString(msg.toJSON())
